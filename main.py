@@ -1,9 +1,19 @@
 import os
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 app = FastAPI()
+
+# 正確加上 CORS 設定
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://eleni1029.github.io"],  # GitHub Pages 前端網址
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class BMIRequest(BaseModel):
     height_cm: float
