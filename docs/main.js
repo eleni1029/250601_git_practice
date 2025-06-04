@@ -1,0 +1,60 @@
+<script type="module">
+import { createApp, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+const app = {
+  setup() {
+    const height = ref('')
+    const weight = ref('')
+    const result = ref(null)
+    const loading = ref(false)
+    const error = ref('')
+
+    const calculateBMI = async () => {
+      error.value = ''
+      result.value = null
+      loading.value = true
+
+      try {
+        const res = await fetch('https://250601gitpractice-production-9a50.up.railway.app/bmi', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            height_cm: parseFloat(height.value),
+            weight_kg: parseFloat(weight.value)
+          })
+        })
+
+        if (!res.ok) throw new Error('API error')
+        result.value = await res.json()
+      } catch (err) {
+        error.value = '無法取得 BMI 結果，請確認數值或稍後再試。'
+      } finally {
+        loading.value = false
+      }
+    }
+
+    return { height, weight, result, loading, error, calculateBMI }
+  },
+  template: `
+    <h1>BMI 計算器</h1>
+    <label>身高（cm）</label>
+    <input v-model="height" type="number" placeholder="請輸入身高" />
+
+    <label>體重（kg）</label>
+    <input v-model="weight" type="number" placeholder="請輸入體重" />
+
+    <button @click="calculateBMI">計算</button>
+
+    <p v-if="loading">計算中...</p>
+    <p v-if="error" style="color:red">{{ error }}</p>
+
+    <div v-if="result">
+      <h2>結果</h2>
+      <p>BMI：{{ result.bmi }}</p>
+      <p>分類：{{ result.category }}</p>
+    </div>
+  `
+}
+
+createApp(app).mount('#app')
+</script>
