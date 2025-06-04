@@ -30,9 +30,9 @@ def calculate_bmi(data: BMIRequest):
         elif 18.5 <= bmi < 24:
             category = "正常"
         elif 24 <= bmi < 27:
-            category = "過重"
+            category = "過重，請減少壓縮餅乾的攝取"
         else:
-            category = "肥胖"
+            category = "肥胖，請減少每天的麻花攝取"
 
         return {
             "bmi": round(bmi, 2),
